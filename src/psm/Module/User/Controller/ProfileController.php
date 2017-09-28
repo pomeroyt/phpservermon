@@ -35,7 +35,7 @@ class ProfileController extends AbstractController {
 	 * Editable fields for the profile
 	 * @var array $profile_fields
 	 */
-	protected $profile_fields = array('name', 'user_name', 'mobile', 'pushover_key', 'pushover_device', 'email');
+	protected $profile_fields = array('name', 'user_name', 'mobile', 'pushover_key', 'pushover_device', 'pushbullet_key', 'pushbullet_device', 'email');
 
 	function __construct(Database $db, \Twig_Environment $twig) {
 		parent::__construct($db, $twig);
@@ -66,6 +66,11 @@ class ProfileController extends AbstractController {
 			'label_pushover_key' => psm_get_lang('users', 'pushover_key'),
 			'label_pushover_device' => psm_get_lang('users', 'pushover_device'),
 			'label_pushover_device_description' => psm_get_lang('users', 'pushover_device_description'),
+			'label_pushbullet' => psm_get_lang('users', 'pushbullet'),
+			'label_pushbullet_description' => psm_get_lang('users', 'pushbullet_description'),
+			'label_pushbullet_key' => psm_get_lang('users', 'pushbullet_key'),
+			'label_pushbullet_device' => psm_get_lang('users', 'pushbullet_device'),
+			'label_pushbullet_device_description' => psm_get_lang('users', 'pushbullet_device_description'),
 			'label_email' => psm_get_lang('users', 'email'),
 			'label_save' => psm_get_lang('system', 'save'),
 			'form_action' => psm_build_url(array(

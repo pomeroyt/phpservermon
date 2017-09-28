@@ -5,6 +5,7 @@
       <li class="{{ email_active }}"><a href="#config-email" data-toggle="tab">{{ label_tab_email }}</a></li>
       <li class="{{ sms_active }}"><a href="#config-sms" data-toggle="tab">{{ label_tab_sms }}</a></li>
       <li class="{{ pushover_active }}"><a href="#config-pushover" data-toggle="tab">{{ label_tab_pushover }}</a></li>
+      <li class="{{ pushbullet_active }}"><a href="#config-pushbullet" data-toggle="tab">{{ label_tab_pushbullet }}</a></li>
     </ul>
 	<div class="tab-content well">
 	  <div id="config-general" class="tab-pane {{ general_active }}">
@@ -263,6 +264,41 @@
 			</div>
             <div class="form-actions">
                 <button class="btn btn-success" type="submit" name="pushover_submit">{{ label_save }}</button>
+            </div>
+		</fieldset>
+		</div>
+		<div id="config-pushbullet" class="tab-pane {{ pushbullet_active }}">
+		<fieldset>
+          <legend>{{ label_settings_pushbullet }}</legend>
+            <div class="control-group">
+                <div class="controls">
+					<label class="checkbox" for="pushbullet_status"><input type="checkbox" id="pushbullet_status" name="pushbullet_status[]" {{ pushbullet_status_checked|raw }} /> {{ label_pushbullet_status }}</label>
+					<p class="help-block">{{ label_pushbullet_description|raw }}</p>
+				</div>
+            </div>
+            <div class="control-group">
+				<div class="controls">
+					<label class="checkbox"><input type="checkbox" id="log_pushbullet" name="log_pushbullet[]" {{ log_pushbullet_checked|raw }} /> {{ label_log_pushbullet }}</label>
+				</div>
+			</div>
+<!--
+            <div class="control-group">
+                <label class="control-label" for="pushbullet_api_token">{{ label_pushbullet_api_token }}</label>
+                <div class="controls">
+					<p><button class="btn btn-primary" onclick="window.open('{{ pushbullet_clone_url }}');return false;">{{ label_pushbullet_clone_app }}</button></p>
+                    <input type="text" id="pushbullet_api_token" name="pushbullet_api_token" value="{{ pushbullet_api_token }}" maxlength="255" />
+					<p class="help-block">{{ label_pushbullet_api_token_description|raw }}</p>
+                </div>
+            </div>
+			<div class="control-group">
+				<div class="controls">
+					<button class="btn btn-primary show-modal" data-modal-id="testpushbullet">{{ label_test }}</button>
+					<input type="hidden" name="test_pushbullet" value="0" />
+				</div>
+			</div>
+-->
+            <div class="form-actions">
+                <button class="btn btn-success" type="submit" name="pushbullet_submit">{{ label_save }}</button>
             </div>
 		</fieldset>
 		</div>

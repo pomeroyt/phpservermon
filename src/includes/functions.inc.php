@@ -492,6 +492,19 @@ function psm_build_pushover() {
 }
 
 /**
+ * Prepare a new Pushbullet util.
+ *
+ * @return \Pushbullet
+ */
+function psm_build_pushbullet($token) {
+	if (empty($token) || $token == '') $token = psm_get_conf('pushbullet_api_token');
+	$pushbullet = new Pushbullet\Pushbullet($token);
+	return $pushbullet;
+}
+
+
+
+/**
  * Prepare a new SMS util.
  *
  * @return \psm\Txtmsg\TxtmsgInterface
@@ -712,7 +725,7 @@ function psm_password_decrypt($key, $encryptedString)
 
 	if (empty($key))
          throw new \InvalidArgumentException('invalid_encryption_key');
-	
+
 	$data = base64_decode($encryptedString);
 	$iv = substr($data, 0, mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC));
 

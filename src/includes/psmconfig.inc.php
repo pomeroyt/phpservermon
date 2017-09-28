@@ -107,6 +107,12 @@ define('PSM_CURL_TIMEOUT', 10);
  */
 define('PSM_PUSHOVER_CLONE_URL', 'https://pushover.net/apps/clone/php_server_monitor');
 
+
+/**
+ * Clone URL for the pushbullet.com service.
+ */
+define('PSM_PUSHBULLET_CLONE_URL', 'https://www.pushbullet.com/#settings/account');
+
 /**
  * By defining the PSM_BASE_URL, you will force the psm_build_url() to use this.
  * Useful for cronjobs if it cannot be auto-detected.

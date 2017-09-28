@@ -41,10 +41,12 @@ class ConfigController extends AbstractController {
 		'email_smtp',
 		'sms_status',
 		'pushover_status',
+		'pushbullet_status',
 		'log_status',
 		'log_email',
 		'log_sms',
 		'log_pushover',
+		'log_pushbullet',
 		'show_update',
 	);
 
@@ -66,6 +68,7 @@ class ConfigController extends AbstractController {
 		'sms_gateway_password',
 		'sms_from',
 		'pushover_api_token',
+		'pushbullet_api_token',
 	);
 
 	private $default_tab = 'general';
@@ -135,7 +138,7 @@ class ConfigController extends AbstractController {
 
 		$tpl_data[$this->default_tab . '_active'] = 'active';
 
-		$testmodals = array('email', 'sms', 'pushover');
+		$testmodals = array('email', 'sms', 'pushover', 'pushbullet');
 		foreach($testmodals as $modal_id) {
 			$modal = new \psm\Util\Module\Modal($this->twig, 'test' . ucfirst($modal_id), \psm\Util\Module\Modal::MODAL_TYPE_OKCANCEL);
 			$this->addModal($modal);
@@ -186,6 +189,8 @@ class ConfigController extends AbstractController {
 				$this->testSMS();
 			} elseif(!empty($_POST['test_pushover'])) {
 				$this->testPushover();
+			} elseif(!empty($_POST['test_pushbullet'])) {
+				$this->testPushbullet();
 			}
 
 			if($language_refresh) {
@@ -201,6 +206,8 @@ class ConfigController extends AbstractController {
 				$this->default_tab = 'sms';
 			} elseif(isset($_POST['pushover_submit']) || !empty($_POST['test_pushover'])) {
 				$this->default_tab = 'pushover';
+			} elseif(isset($_POST['pushbullet_submit']) || !empty($_POST['test_pushbullet'])) {
+				$this->default_tab = 'pushbullet';
 			}
 		}
 		return $this->runAction('index');
@@ -287,14 +294,48 @@ class ConfigController extends AbstractController {
 		}
 	}
 
+	/**
+	 * Execute pushbullet test
+	 *
+	 * @todo move test to separate class
+	 */
+	protected function testPushbullet() {
+		$pushbullet = psm_build_pushbullet();
+		$user = $this->getUser()->getUser();
+		$api_token = $user['pushbullet_key'];
+
+		if(empty($api_token)) {
+			$this->addMessage(psm_get_lang('config', 'pushbullet_error_noapp'), 'error');
+		} elseif(empty($user->pushbullet_key)) {
+			$this->addMessage(psm_get_lang('config', 'pushbullet_error_nokey'), 'error');
+		} else {
+			$title = psm_get_lang('config', 'test_subject');
+			$message = psm_get_lang('config', 'test_message');
+			$pushbullet = psm_build_pushbullet($api_token);
+			if ($user['pushbullet_device'] != '') {
+				$result = $pushbullet->device($user['pushbullet_device'])->pushNote($title,$message);
+			} else {
+				$result = $pushbullet->allDevices()->pushNote($title,$message);
+			}
+			if(isset($result['active']->status) && $result['active'] == true) {
+				$this->addMessage(psm_get_lang('config', 'pushbullet_sent'), 'success');
+			} else {
+				$error = 'Not Pushable';
+				$this->addMessage(sprintf(psm_get_lang('config', 'pushbullet_error'), $error), 'error');
+			}
+		}
+	}
+
 	protected function getLabels() {
 		return array(
 			'label_tab_email' => psm_get_lang('config', 'tab_email'),
 			'label_tab_sms' => psm_get_lang('config', 'tab_sms'),
 			'label_tab_pushover' => psm_get_lang('config', 'tab_pushover'),
+			'label_tab_pushbullet' => psm_get_lang('config', 'tab_pushbullet'),
 			'label_settings_email' => psm_get_lang('config', 'settings_email'),
 			'label_settings_sms' => psm_get_lang('config', 'settings_sms'),
 			'label_settings_pushover' => psm_get_lang('config', 'settings_pushover'),
+			'label_settings_pushbullet' => psm_get_lang('config', 'settings_pushbullet'),
 			'label_settings_notification' => psm_get_lang('config', 'settings_notification'),
 			'label_settings_log' => psm_get_lang('config', 'settings_log'),
 			'label_settings_proxy' => psm_get_lang('config', 'settings_proxy'),
@@ -346,6 +387,15 @@ class ConfigController extends AbstractController {
 				psm_get_lang('config', 'pushover_api_token_description'),
 				PSM_PUSHOVER_CLONE_URL
 			),
+			'label_pushbullet_description' => psm_get_lang('config', 'pushbullet_description'),
+			'label_pushbullet_status' => psm_get_lang('config', 'pushbullet_status'),
+			'label_pushbullet_clone_app' => psm_get_lang('config', 'pushbullet_clone_app'),
+			'pushbullet_clone_url' => PSM_PUSHBULLET_CLONE_URL,
+			'label_pushbullet_api_token' => psm_get_lang('config', 'pushbullet_api_token'),
+			'label_pushbullet_api_token_description' => sprintf(
+				psm_get_lang('config', 'pushbullet_api_token_description'),
+				PSM_PUSHBULLET_CLONE_URL
+			),
 			'label_alert_type' => psm_get_lang('config', 'alert_type'),
 			'label_alert_type_description' => psm_get_lang('config', 'alert_type_description'),
 			'label_alert_type_status' => psm_get_lang('config', 'alert_type_status'),
@@ -356,6 +406,7 @@ class ConfigController extends AbstractController {
 			'label_log_email' => psm_get_lang('config', 'log_email'),
 			'label_log_sms' => psm_get_lang('config', 'log_sms'),
 			'label_log_pushover' => psm_get_lang('config', 'log_pushover'),
+			'label_log_pushbullet' => psm_get_lang('config', 'log_pushbullet'),
 			'label_alert_proxy' => psm_get_lang('config', 'alert_proxy'),
 			'label_alert_proxy_url' => psm_get_lang('config', 'alert_proxy_url'),
 			'label_auto_refresh' => psm_get_lang('config', 'auto_refresh'),

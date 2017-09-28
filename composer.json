@@ -3,7 +3,7 @@
 	"description": "PHP Server Monitor",
 	"homepage": "http://www.phpservermonitor.org",
 	"repositories": [
-		
+
 	],
 	"require": {
 		"php": ">=5.3.7",
@@ -13,6 +13,7 @@
 		"symfony/event-dispatcher": "2.8.*",
 		"symfony/http-foundation": "2.8.*",
 		"php-pushover/php-pushover": "dev-master",
+		"ivkos/pushbullet": "3.*",
 		"twig/twig": "1.*",
 		"paragonie/random_compat" : "1.1.6",
 		"indigophp/hash-compat" : "1.1.0"
