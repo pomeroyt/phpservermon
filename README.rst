@@ -4,7 +4,7 @@ PHP Server Monitor
 .. image:: https://badges.gitter.im/Join%20Chat.svg
    :alt: Join the chat at https://gitter.im/erickrf/nlpnet
    :target: https://gitter.im/phpservermon/phpservermon
-   
+
 Version 3.2.0
 
 
@@ -17,7 +17,7 @@ Features:
 ---------
 
 * Monitor services and websites (see below).
-* Email, SMS and Pushover notifications.
+* Email, SMS, Pushover, and Pushbullet notifications.
 * View history graphs of uptime and latency.
 * User authentication with 2 levels (administrator and regular user).
 * Logs of connection errors, outgoing emails and text messages.
@@ -40,7 +40,7 @@ There are two different ways to monitor a server:
   In both cases the script will return a "status offline", and will start sending out notifications.
 
 Each server has its own settings regarding notification.
-You can choose for email, text message (SMS) and Pushover.net notifications.
+You can choose for email, text message (SMS), Pushover.net, and Pushbullet.com notifications.
 The following SMS gateways are currently available:
 
 * Clickatell - <https://www.clickatell.com>
