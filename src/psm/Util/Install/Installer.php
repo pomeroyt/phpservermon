@@ -305,6 +305,9 @@ class Installer {
 		if(version_compare($version_from, '3.2.1', '<')) {
 			$this->upgrade321();
 		}
+		if(version_compare($version_from, '3.2.2', '<')) {
+			$this->upgrade322();
+		}
 		psm_update_conf('version', $version_to);
 	}
 
@@ -432,22 +435,15 @@ class Installer {
 		psm_update_conf('pushover_api_token', '');
 		$queries[] = "ALTER TABLE `" . PSM_DB_PREFIX . "users` ADD  `pushover_key` VARCHAR( 255 ) NOT NULL AFTER `mobile`;";
 		$queries[] = "ALTER TABLE `" . PSM_DB_PREFIX . "users` ADD  `pushover_device` VARCHAR( 255 ) NOT NULL AFTER `pushover_key`;";
-		$queries[] = "ALTER TABLE `" . PSM_DB_PREFIX . "users` ADD  `pushbullet_key` VARCHAR( 255 ) NOT NULL AFTER `mobile`;";
-		$queries[] = "ALTER TABLE `" . PSM_DB_PREFIX . "users` ADD  `pushbullet_device` VARCHAR( 255 ) NOT NULL AFTER `pushbullet_key`;";
-
 		$queries[] = "ALTER TABLE `" . PSM_DB_PREFIX . "servers` ADD  `pushover` ENUM( 'yes','no' ) NOT NULL DEFAULT 'yes' AFTER  `sms`;";
-		$queries[] = "ALTER TABLE `" . PSM_DB_PREFIX . "servers` ADD  `pushbullet` ENUM( 'yes','no' ) NOT NULL DEFAULT 'yes' AFTER  `pushover`;";
-		$queries[] = "ALTER TABLE `" . PSM_DB_PREFIX . "log` CHANGE `type` `type` ENUM( 'status', 'email', 'sms', 'pushover', 'pushbullet' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;";
-
+		$queries[] = "ALTER TABLE `" . PSM_DB_PREFIX . "log` CHANGE `type` `type` ENUM( 'status', 'email', 'sms', 'pushover') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;";
 		$queries[] = "ALTER TABLE `" . PSM_DB_PREFIX . "servers` ADD `timeout` smallint(1) unsigned NULL DEFAULT NULL;";
-
 		$queries[] = "CREATE TABLE IF NOT EXISTS `" . PSM_DB_PREFIX . "users_preferences` (
 						`user_id` int(11) unsigned NOT NULL,
 						`key` varchar(255) NOT NULL,
 						`value` varchar(255) NOT NULL,
 						PRIMARY KEY (`user_id`, `key`)
 					  ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
-
 		$this->execSQL($queries);
 	}
 
@@ -501,4 +497,18 @@ class Installer {
 		$queries[] = "ALTER TABLE `" . PSM_DB_PREFIX . "servers` ADD COLUMN `header_name` VARCHAR(255) AFTER `pattern`, ADD COLUMN `header_value` VARCHAR(255) AFTER `header_name`";
 		$this->execSQL($queries);
 	}
+
+	/**
+	 * Upgrade for v3.2.2 release
+	 */
+	protected function upgrade322() {
+		$queries = array();
+		$queries[] = "INSERT INTO `" . PSM_DB_PREFIX . "config` (`key`, `value`) VALUE ('pushbullet_status', '0'), ('pushbullet_api_token', ''), ('log_pushbullet', '1');";
+		$queries[] = "ALTER TABLE `" . PSM_DB_PREFIX . "users` ADD  `pushbullet_key` VARCHAR( 255 ) NOT NULL AFTER `pushover_device`;";
+		$queries[] = "ALTER TABLE `" . PSM_DB_PREFIX . "users` ADD  `pushbullet_device` VARCHAR( 255 ) NOT NULL AFTER `pushbullet_key`;";
+		$queries[] = "ALTER TABLE `" . PSM_DB_PREFIX . "log` CHANGE `type` `type` ENUM('status','email','sms','pushover','pushbullet') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;";
+		$queries[] = "ALTER TABLE `" . PSM_DB_PREFIX . "servers` ADD  `pushbullet` ENUM( 'yes','no' ) NOT NULL DEFAULT 'yes' AFTER  `pushover`;";
+		$this->execSQL($queries);
+	}
+
 }
